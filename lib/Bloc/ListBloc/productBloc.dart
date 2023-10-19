@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webkart/Bloc/ListBloc/productState.dart';
 import 'package:webkart/Bloc/ListBloc/productevent.dart';
 
-import '../../Data/ApiServices/ApiServices.dart';
+import '../../Data/ApiServices/ProductApi/ApiServices.dart';
 //import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductBloc extends Bloc<ProductEvent,ProductState>{

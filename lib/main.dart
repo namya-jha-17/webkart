@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:webkart/Presentation/Screens/Categorypage.dart';
 import 'package:webkart/Presentation/Screens/ListScreen.dart';
 
 import 'Bloc/CartBloc/CartBloc.dart';
+import 'Bloc/CategoryBloc/CategoryBloc.dart';
 import 'Bloc/ListBloc/productBloc.dart';
-
+// late ProductBloc productbloc;
+//late CartBloc cbloc;
 void main() {
   runApp(const MyApp());
 }
@@ -25,10 +28,11 @@ class MyApp extends StatelessWidget {
       ),
       home: MultiBlocProvider(providers: [
     BlocProvider<ProductBloc>(create: (context)=>ProductBloc(),),
-    BlocProvider<CartBloc>(create: (context)=>CartBloc(),)
+    BlocProvider<CartBloc>(create: (context)=>CartBloc(),),
+        BlocProvider<CategoryBloc>(create: (context)=>CategoryBloc(),)
     ],
     child: Scaffold(
-    body: ListScreen(),
+    body: CategoryPage(),
     ),
       ),
     );
