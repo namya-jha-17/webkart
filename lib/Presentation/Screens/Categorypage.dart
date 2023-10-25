@@ -2,14 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:webkart/Bloc/CartBloc/CartBloc.dart';
+
 import 'package:webkart/Bloc/CategoryBloc/CategoryBloc.dart';
 import 'package:webkart/Bloc/CategoryBloc/CategoryState.dart';
 import 'package:webkart/Bloc/CategoryBloc/Categoryevent.dart';
 import 'package:webkart/Data/ApiServices/ProductApi/ApiServices.dart';
 
-import '../../Bloc/ListBloc/productBloc.dart';
-import '../../main.dart';
 import 'ListScreen.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -62,6 +60,7 @@ late CategoryBloc catbloc;
 
           builder: (BuildContext  context, state) {
             if(state is CategoryLoadedState){
+
             return Center(
               child: Container(height: 800,
                 width: MediaQuery.of(context).size.width,
@@ -72,7 +71,8 @@ late CategoryBloc catbloc;
                   magnification: 1.2,
                   physics: FixedExtentScrollPhysics(),
 
-                     childDelegate: ListWheelChildBuilderDelegate(childCount: state.categories.length,
+                     childDelegate: ListWheelChildBuilderDelegate(
+                         childCount: state.categories.length,
                          builder: (BuildContext context, int index) {
                           return InkWell(
                             child: Container(child: Center(
@@ -101,7 +101,7 @@ late CategoryBloc catbloc;
               ),
             );}
               else
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
 
 
                   }

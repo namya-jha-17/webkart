@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webkart/Presentation/Screens/Categorypage.dart';
+import 'package:webkart/Presentation/Screens/FlashScreen.dart';
 import 'package:webkart/Presentation/Screens/ListScreen.dart';
 
 import 'Bloc/CartBloc/CartBloc.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<CategoryBloc>(create: (context)=>CategoryBloc(),)
     ],
     child: Scaffold(
-    body: CategoryPage(),
+    body: Center(child: FlashScreen()),
     ),
       ),
     );
