@@ -29,18 +29,18 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreenState extends State<ListScreen> {
+  CartBloc cbloc=CartBloc();
 
-  late CartBloc cbloc;
-ProductBloc productBloc =ProductBloc();
+late ProductBloc productBloc ;
   @override
   void initState() {
     super.initState();
 
     try{
       // productbloc =
-      //     BlocProvider.of<ProductBloc>(context , listen: false);
+       productBloc=  BlocProvider.of<ProductBloc>(context , listen: false);
        productBloc.add(LoadProductEvent());
-      cbloc = BlocProvider.of<CartBloc>(context);
+//cbloc = BlocProvider.of<CartBloc>(context);
     }
     catch(err){
       print(err.toString());
@@ -51,144 +51,151 @@ ProductBloc productBloc =ProductBloc();
   Widget build(BuildContext context) {
 
 
-    return Scaffold(
-        backgroundColor: CupertinoColors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.white10,
-          actions: [
-            const Icon(CupertinoIcons.search),
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (newContext) =>
+    return BlocBuilder<ProductBloc,ProductState>(
+      builder: (context,state) {
+        return Scaffold(
+            backgroundColor: CupertinoColors.black,
+            appBar: AppBar(
+              backgroundColor: Colors.white10,
+              actions: [
+                const Icon(CupertinoIcons.search),
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                 BlocProvider.value(value: cbloc,child:
 
-                            BlocProvider.value(value: cbloc,child:CartList()),));
-                },
-                icon: Icon(Icons.shopping_cart))
-          ],
-        ),
-        body: BlocBuilder<ProductBloc, ProductState>(
-          bloc: productBloc,
-            builder: (BuildContext context, state) {
+                              CartList()),
+                          ),
+                      );
+                    },
+                    icon: Icon(Icons.shopping_cart))
+              ],
+            ),
+            body: BlocBuilder<ProductBloc, ProductState>(
 
-          if (state is ProductLoading) {
-            return CircularProgressIndicator();
-          }
+                builder: ( context, state) {
 
-          else if (state is ProductLoadedState) {
+              if (state is ProductLoading) {
+                return CircularProgressIndicator();
+              }
 
-            List<Product> prodlist=[];
-            state.products.forEach((element) {   if(widget.category==element.category){
-              prodlist.add(element);
-            } });
-           // if(widget.category==state.products[index].category) {
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
+              else if (state is ProductLoadedState) {
 
-
-              child: GridView.builder(
-                  itemCount: prodlist.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 3 / 4.5,
-                      mainAxisSpacing: 10,
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 5),
-                  itemBuilder: (BuildContext context, int index) {
+                List<Product> prodlist=[];
+                state.products.forEach((element) {   if(widget.category==element.category){
+                  prodlist.add(element);
+                } });
+               // if(widget.category==state.products[index].category) {
+                return Padding(
+                  padding: const EdgeInsets.all(10.0),
 
 
-                      print(" categoryprod :${widget.category==state.products[index].category}");
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (ctx) => BlocProvider.value(
-                                value: cbloc,
-                                child: DetailsScreen(state.products[index]),
-                              ),
+                  child: GridView.builder(
+                      itemCount: prodlist.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          childAspectRatio: 3 / 4.5,
+                          mainAxisSpacing: 10,
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 5),
+                      itemBuilder: (BuildContext context, int index) {
+
+
+                          print(" categoryprod :${widget.category==state.products[index].category}");
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (ctx) => BlocProvider.value(
+                                    value: cbloc,
+                                    child: DetailsScreen(state.products[index]),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Stack(children: [
+                                  ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    child: Container(
+                                      height: 200,
+                                      width: 150,
+                                      margin: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(20.0),
+                                        ),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                            prodlist[index].thumbnail
+                                            //state.products[index].thumbnail,
+                                          ),
+                                          //fit: BoxFit.fill
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    child: GestureDetector(
+                                      child: Icon(
+                                        CupertinoIcons.cart,
+                                        color: Colors.white,
+                                      ),
+                                      onTap: () {
+                                      //  final cartBloc = context.read<CartBloc>();
+                                        final cartItems = cbloc.state.cartList;
+                                        if (cartItems.any((element) =>
+                                            element.id ==
+                                            state.products[index].id)) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content: Text("Already added in cart"),
+                                            duration: Duration(seconds: 2),
+                                          ));
+                                        } else {
+                                          cbloc.add(addToCartevent(
+                                              state.products[index]));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                            content: Text("Add to Cart"),
+                                            duration: Duration(seconds: 2),
+                                          ));
+                                          print('addv TO cart succesfully');
+                                        }
+                                      },
+                                    ),
+                                    right: 10,
+                                    bottom: 10,
+                                  )
+                                ]),
+                                Text(
+                                  state.products[index].title,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: CupertinoColors.white),
+                                )
+                              ],
                             ),
                           );
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Stack(children: [
-                              ClipRRect(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  margin: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(20.0),
-                                    ),
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                        prodlist[index].thumbnail
-                                        //state.products[index].thumbnail,
-                                      ),
-                                      //fit: BoxFit.fill
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                child: GestureDetector(
-                                  child: Icon(
-                                    CupertinoIcons.cart,
-                                    color: Colors.white,
-                                  ),
-                                  onTap: () {
-                                    final cartBloc = context.read<CartBloc>();
-                                    final cartItems = cartBloc.state.cartList;
-                                    if (cartItems.any((element) =>
-                                        element.id ==
-                                        state.products[index].id)) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text("Already added in cart"),
-                                        duration: Duration(seconds: 2),
-                                      ));
-                                    } else {
-                                      cartBloc.add(addToCartevent(
-                                          state.products[index]));
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                        content: Text("Add to Cart"),
-                                        duration: Duration(seconds: 2),
-                                      ));
-                                      print('addv TO cart succesfully');
-                                    }
-                                  },
-                                ),
-                                right: 10,
-                                bottom: 10,
-                              )
-                            ]),
-                            Text(
-                              state.products[index].title,
-                              softWrap: true,
-                              style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: CupertinoColors.white),
-                            )
-                          ],
-                        ),
-                      );
-                  //  }
+                      //  }
 
-                  }),
-            );
-            //: Center(child: CircularProgressIndicator(),);
-          }
+                      }),
+                );
+                //: Center(child: CircularProgressIndicator(),);
+              }
 
-          return Container();
-        }));
+              return Container();
+            }));
+      }
+    );
   }
 }
 

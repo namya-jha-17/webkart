@@ -23,9 +23,10 @@ class _CartListState extends State<CartList> {
 late CartBloc cbloc;
   @override
   void initState() {
+    cbloc=BlocProvider.of<CartBloc>(context,listen: false);
     // TODO: implement initState
     super.initState();
-// cbloc=BlocProvider.of<CartBloc>(context,listen: true);
+
    //BlocProvider.of(context, listen: false);
 
   }
@@ -34,7 +35,7 @@ late CartBloc cbloc;
   Widget build(BuildContext context) {
     RazorpayIntegration rp=RazorpayIntegration();
     final Razorpay _razorpay = Razorpay();
-    var   cartBloc;
+
     Repo repo= Repo();
     return BlocBuilder<CartBloc,CartState>(
 
@@ -50,7 +51,7 @@ late CartBloc cbloc;
                   itemCount:  state.cartList.length,
                   // to do
                   itemBuilder: ( context, int index) {
-                    cartBloc=BlocProvider.of<CartBloc>(context);
+
                     return ListTile(
                       leading: SizedBox(
                         width: 70,
@@ -88,7 +89,7 @@ late CartBloc cbloc;
                                // final incbloc = context.read<CartBloc>();
 
                                 // final incbloc = context.read<CartBloc>();
-                                cartBloc.add(InCqty((state.cartList[index].quantity)));
+                                cbloc.add(InCqty((state.cartList[index].quantity)));
 
                                 // print(state.cartList[index].quantity);
                                  print('++ is called ');
@@ -105,10 +106,9 @@ late CartBloc cbloc;
                       trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {
-                                             cartBloc=BlocProvider.of<CartBloc>(context);
-                                             cartBloc.add(RemovefromCartevent(state.cartList[index]));
-
-                                         }
+                         //   cbloc=BlocProvider.of<CartBloc>(context);
+                            cbloc.add(RemovefromCartevent(state.cartList[index]));
+                          }
                       ),
                     );
                   }),

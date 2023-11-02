@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webkart/Bloc/CategoryBloc/CategoryBloc.dart';
 import 'package:webkart/Bloc/CategoryBloc/CategoryState.dart';
 import 'package:webkart/Bloc/CategoryBloc/Categoryevent.dart';
+import 'package:webkart/Bloc/ListBloc/productBloc.dart';
 import 'package:webkart/Data/ApiServices/ProductApi/ApiServices.dart';
 
 import 'ListScreen.dart';
@@ -19,6 +20,7 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
 late CategoryBloc catbloc;
+ProductBloc productBloc=ProductBloc();
   ApiClient api=ApiClient(Dio());
 
   @override
@@ -87,19 +89,20 @@ late CategoryBloc catbloc;
                     onTap: (){ Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
+                          builder: (context) =>BlocProvider.value(value: productBloc,child:
 
                               ListScreen(state.categories[index])),
-
+                        )
                     );
                               },
                           );
-                     }
+                       }
 
-              ),
-              ),
-              ),
-            );}
+                    ),
+                  ),
+                ),
+              );
+            }
               else
                 return Center(child: CircularProgressIndicator());
 
